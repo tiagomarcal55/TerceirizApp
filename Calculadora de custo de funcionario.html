@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Custos e Precificação - Serviços de Limpeza</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'primary': '#434E6E', 'secondary': '#7A8299', 'accent': '#64748b', 'surface': '#ffffff', 'background': '#f8fafc', 'on-primary': '#ffffff', 'on-surface': '#1e293b', 'success': '#16a34a', 'warning': '#f59e0b', 'danger': '#dc2626' }
+                }
+            }
+        }
+        .expandable-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+        .expandable-content.expanded { max-height: 1000px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-4 lg:p-8">
+        <div class="w-full max-w-7xl mx-auto">
+            
+            <header class="mb-8 text-center">
+                <h1 class="text-4xl font-bold text-primary tracking-tight">Dashboard de Custos e Precificação</h1>
+                <p class="text-lg text-secondary mt-2">Análise completa para otimização de contratos.</p>
+            </header>
+
+            <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <div class="lg:col-span-1 flex flex-col gap-8">
+                    
+                    <div class="bg-surface p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-3">Parâmetros do Funcionário</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="salarioBase" class="block text-sm font-medium text-secondary mb-1">Salário Base (R$)</label>
+                                <input type="number" id="salarioBase" value="1764" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+                            </div>
+                            <div>
+                                <label for="valeAlimentacao" class="block text-sm font-medium text-secondary mb-1">Vale Alimentação (R$)</label>
+                                <input type="number" id="valeAlimentacao" value="805" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+                            </div>
+                            <div>
+                                <label for="valeTransporte" class="block text-sm font-medium text-secondary mb-1">Vale Transporte (R$)</label>
+                                <input type="number" id="valeTransporte" value="360" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+                            </div>
+                            <div class="flex items-center justify-between pt-2">
+                                <span class="text-sm font-medium text-secondary">Aplicar Desconto Padrão VT (6%)</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="valeTransporteDescontoSwitch" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+
+                            <div class="pt-2 text-right">
+                                <button id="expand-params-btn" class="inline-flex items-center text-sm font-medium text-primary hover:text-accent transition">
+                                    <span>Custos Adicionais</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1 transition-transform text-primary"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                            </div>
+
+                            <div id="additional-params" class="expandable-content space-y-4 pt-4 border-t">
+                                <div>
+                                    <label for="custoUniformes" class="block text-sm font-medium text-secondary mb-1">Custo Mensal Uniformes/EPIs (R$)</label>
+                                    <input type="number" id="custoUniformes" value="100" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+                                </div>
+                                <div>
+                                    <label for="custoContabilidade" class="block text-sm font-medium text-secondary mb-1">Custo Mensal Contabilidade (p/ func.)</label>
+                                    <input type="number" id="custoContabilidade" value="165" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+                                </div>
+                                <div>
+                                    <label for="custoOutros" class="block text-sm font-medium text-secondary mb-1">Outros Custos Mensais (R$)</label>
+                                    <input type="number" id="custoOutros" value="0" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="text-xl font-semibold text-primary mb-4 border-b pb-3">Custo Real por Funcionário (44h/sem)</h3>
+                        <div id="cost-breakdown" class="space-y-2"></div>
+                        <div class="border-t mt-4 pt-4 flex justify-between items-center text-base">
+                            <span class="font-semibold text-primary">Custo Total Mensal</span>
+                            <span id="custoTotalMensalFuncionario" class="font-bold text-primary text-lg">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-surface p-8 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-bold text-primary mb-6">Simulador de Contrato</h2>
+                    
+                    <div class="mb-8">
+                        <label class="block text-sm font-medium text-secondary mb-2">Configuração de Equipe</label>
+                        <div id="employee-rows-container" class="space-y-3"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 items-end">
+                         <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label for="aliquotaSimples" class="block text-sm font-medium text-secondary">Alíquota de Imposto (%)</label>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="aliquotaAutomaticaSwitch" class="sr-only peer" checked>
+                                    <div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    <span class="ml-3 text-sm font-medium text-secondary">Auto</span>
+                                </label>
+                            </div>
+                            <input type="number" id="aliquotaSimples" value="6.0" step="0.1" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition" title="Alíquota calculada automaticamente. Desative o modo 'Auto' para inserir manualmente.">
+                        </div>
+                        <div>
+                             <label for="valorContrato" class="block text-sm font-medium text-secondary mb-1">Valor Mensal do Contrato (R$)</label>
+                            <input type="number" id="valorContrato" value="" placeholder="Informe o valor do contrato" class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition placeholder-slate-400">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Análise Financeira do Contrato</h3>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <div class="bg-white p-4 rounded-lg border text-center flex-1 min-w-[150px]">
+                                <p class="text-sm text-secondary">Custo Total</p>
+                                <p id="dashCustoTotal" class="text-xl xl:text-2xl font-bold text-primary mt-1">R$ 0,00</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border text-center flex-1 min-w-[150px]">
+                                <p class="text-sm text-secondary">Impostos</p>
+                                <p id="dashImpostos" class="text-xl xl:text-2xl font-bold text-danger mt-1">R$ 0,00</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border text-center flex-1 min-w-[150px]">
+                                <p class="text-sm text-secondary">Lucro Líquido</p>
+                                <p id="dashLucroLiquido" class="text-xl xl:text-2xl font-bold text-success mt-1">R$ 0,00</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border text-center flex-1 min-w-[150px]">
+                                <p class="text-sm text-secondary">Margem</p>
+                                <p id="dashMargemReal" class="text-xl xl:text-2xl font-bold text-primary mt-1">0.0%</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border text-center flex-1 min-w-[150px]">
+                                <p class="text-sm text-secondary">Fator R</p>
+                                <p id="dashFatorR" class="text-xl xl:text-2xl font-bold text-primary mt-1">0.0%</p>
+                            </div>
+                        </div>
+                        
+                        <div id="analiseViabilidade" class="mt-6 text-center bg-primary text-on-primary p-4 rounded-lg">
+                            Preencha o valor do contrato para ver a análise de viabilidade.
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // --- ELEMENT SELECTORS ---
+        const inputs = {
+            salarioBase: document.getElementById('salarioBase'),
+            valeAlimentacao: document.getElementById('valeAlimentacao'),
+            valeTransporte: document.getElementById('valeTransporte'),
+            vtDescontoSwitch: document.getElementById('valeTransporteDescontoSwitch'),
+            custoUniformes: document.getElementById('custoUniformes'),
+            custoContabilidade: document.getElementById('custoContabilidade'),
+            custoOutros: document.getElementById('custoOutros'),
+            aliquotaSimples: document.getElementById('aliquotaSimples'),
+            aliquotaAutomaticaSwitch: document.getElementById('aliquotaAutomaticaSwitch'),
+            valorContrato: document.getElementById('valorContrato'),
+        };
+        const containers = {
+            additionalParams: document.getElementById('additional-params'),
+            costBreakdown: document.getElementById('cost-breakdown'),
+            employeeRows: document.getElementById('employee-rows-container'),
+        };
+        const buttons = {
+            expandParams: document.getElementById('expand-params-btn'),
+        };
+        const outputs = {
+            custoTotalMensalFuncionario: document.getElementById('custoTotalMensalFuncionario'),
+            dashCustoTotal: document.getElementById('dashCustoTotal'),
+            dashImpostos: document.getElementById('dashImpostos'),
+            dashLucroLiquido: document.getElementById('dashLucroLiquido'),
+            dashMargemReal: document.getElementById('dashMargemReal'),
+            dashFatorR: document.getElementById('dashFatorR'),
+            analiseViabilidade: document.getElementById('analiseViabilidade'),
+        };
+
+        // --- UTILITY FUNCTIONS ---
+        const formatCurrency = (value) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+
+        function getAliquotaSimples(faturamentoAnual, fatorR) {
+            const anexo = fatorR >= 0.28 ? 'III' : 'V';
+            const faixas = {
+                'III': [
+                    { limite: 180000, aliquota: 6.0 }, { limite: 360000, aliquota: 11.2 },
+                    { limite: 720000, aliquota: 13.5 }, { limite: 1800000, aliquota: 16.0 },
+                    { limite: 3600000, aliquota: 21.0 }, { limite: 4800000, aliquota: 33.0 }
+                ],
+                'V': [
+                    { limite: 180000, aliquota: 15.5 }, { limite: 360000, aliquota: 18.0 },
+                    { limite: 720000, aliquota: 19.5 }, { limite: 1800000, aliquota: 20.5 },
+                    { limite: 3600000, aliquota: 23.0 }, { limite: 4800000, aliquota: 30.5 }
+                ]
+            };
+
+            for (const faixa of faixas[anexo]) {
+                if (faturamentoAnual <= faixa.limite) {
+                    return faixa.aliquota;
+                }
+            }
+            return faixas[anexo][faixas[anexo].length - 1].aliquota; // Retorna a última alíquota se passar do limite
+        }
+
+
+        // --- CORE CALCULATION LOGIC ---
+        function calculateBaseCost() {
+            const salario = parseFloat(inputs.salarioBase.value) || 0;
+            const va = parseFloat(inputs.valeAlimentacao.value) || 0;
+            const vt = parseFloat(inputs.valeTransporte.value) || 0;
+            const vtDescontoAtivo = inputs.vtDescontoSwitch.checked;
+
+            const descontoVA = va * 0.20;
+            const descontoVT = vtDescontoAtivo ? Math.min(salario * 0.06, vt) : 0;
+
+            const custosDiretosDetails = [
+                { item: 'Salário Base', valor: salario, obs: 'Piso da categoria' },
+                { item: 'Vale Alimentação', valor: va - descontoVA, obs: `Custo líquido (desconto de ${formatCurrency(descontoVA)})` },
+                { item: 'Vale Transporte', valor: vt - descontoVT, obs: `Custo líquido (desconto de ${formatCurrency(descontoVT)})` },
+                { item: 'Uniformes e EPIs', valor: parseFloat(inputs.custoUniformes.value) || 0, obs: 'Custo médio mensal' },
+                { item: 'Contabilidade', valor: parseFloat(inputs.custoContabilidade.value) || 0, obs: 'Custo por funcionário' },
+                { item: 'Outros', valor: parseFloat(inputs.custoOutros.value) || 0, obs: 'Custos diversos' },
+            ];
+            const custosDiretosTotal = custosDiretosDetails.reduce((sum, item) => sum + item.valor, 0);
+
+            const encargosDetails = [
+                { item: 'FGTS', valor: salario * 0.08, obs: '8% sobre o salário base' },
+                { item: 'Seguro Acidente (RAT)', valor: salario * 0.01, obs: '1% (risco baixo)' },
+            ];
+            const encargosTotal = encargosDetails.reduce((sum, item) => sum + item.valor, 0);
+
+            const provisoesDetails = [
+                { item: '13º Salário', valor: salario / 12, obs: 'Provisão mensal do salário' },
+                { item: 'Férias + 1/3', valor: (salario * 1.3333) / 12, obs: 'Provisão mensal das férias' },
+                { item: 'FGTS s/ 13º e Férias', valor: ((salario + (salario / 3)) * 0.08) / 12, obs: 'FGTS sobre provisões' },
+                { item: 'Multa FGTS (40%)', valor: (salario * 0.08 * 12 * 0.40) / 12, obs: 'Provisão para rescisão' },
+                { item: 'Aviso Prévio Indenizado', valor: salario / 12, obs: 'Provisão para rescisão' },
+                { item: 'Documentações Obrigatórias', valor: 1060 / 12, obs: 'LTCAT, PCMSO, PGR, ASO' },
+            ];
+            const provisoesTotal = provisoesDetails.reduce((sum, item) => sum + item.valor, 0);
+            
+            const operacionaisDetails = [
+                 { item: 'Cobertura de Faltas/Férias', valor: 250, obs: 'Provisão para substituição' },
+                 { item: 'Seguro de Vida', valor: 15, obs: 'Apólice em grupo' },
+                 { item: 'Supervisão e Gestão', valor: 50, obs: 'Custo indireto' },
+            ];
+            const operacionaisTotal = operacionaisDetails.reduce((sum, item) => sum + item.valor, 0);
+
+            return {
+                salarioBase: salario,
+                custosDiretos: { total: custosDiretosTotal, details: custosDiretosDetails },
+                encargos: { total: encargosTotal, details: encargosDetails },
+                provisoes: { total: provisoesTotal, details: provisoesDetails },
+                operacionais: { total: operacionaisTotal, details: operacionaisDetails },
+                custoTotal: custosDiretosTotal + encargosTotal + provisoesTotal + operacionaisTotal,
+            };
+        }
+
+        // --- UI UPDATE FUNCTIONS ---
+        function updateCostBreakdown(baseCost) {
+            containers.costBreakdown.innerHTML = '';
+            const categories = [
+                { title: 'Custos Diretos', data: baseCost.custosDiretos },
+                { title: 'Encargos', data: baseCost.encargos },
+                { title: 'Provisões', data: baseCost.provisoes },
+                { title: 'Custos Operacionais', data: baseCost.operacionais },
+            ];
+
+            categories.forEach(cat => {
+                const categoryId = cat.title.replace(/\s+/g, '-').toLowerCase();
+                let detailsHTML = cat.data.details.map(item => `
+                    <tr class="text-xs border-t">
+                        <td class="py-1 pr-2 text-slate-600">${item.item}</td>
+                        <td class="py-1 px-2 text-slate-500 text-right">${item.obs}</td>
+                        <td class="py-1 pl-2 font-medium text-right">${formatCurrency(item.valor)}</td>
+                    </tr>
+                `).join('');
+
+                const breakdownHTML = `
+                    <div>
+                        <button class="w-full flex justify-between items-center py-1 text-sm" data-toggle="expand" data-target="#${categoryId}-details">
+                            <span class="font-medium text-secondary">${cat.title}</span>
+                            <div class="flex items-center">
+                                <span class="font-semibold text-on-surface mr-2">${formatCurrency(cat.data.total)}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-secondary transition-transform"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </button>
+                        <div id="${categoryId}-details" class="expandable-content pl-4">
+                            <table class="w-full mt-1">${detailsHTML}</table>
+                        </div>
+                    </div>
+                `;
+                containers.costBreakdown.innerHTML += breakdownHTML;
+            });
+        }
+
+        function calculateAndRenderAll() {
+            const baseCost = calculateBaseCost();
+            updateCostBreakdown(baseCost);
+            outputs.custoTotalMensalFuncionario.textContent = formatCurrency(baseCost.custoTotal);
+            
+            let custoTotalOperacao = 0;
+            let folhaSalarialTotal = 0;
+            const employeeRows = containers.employeeRows.querySelectorAll('.employee-row');
+            
+            employeeRows.forEach(row => {
+                const horas = parseFloat(row.querySelector('.horas-input').value) || 0;
+                const qtd = parseInt(row.querySelector('.qtd-input').value) || 0;
+                if (horas > 0 && qtd > 0) {
+                    const fatorCargaHoraria = horas / 44;
+                    custoTotalOperacao += baseCost.custoTotal * qtd * fatorCargaHoraria;
+                    folhaSalarialTotal += baseCost.salarioBase * qtd * fatorCargaHoraria;
+                }
+            });
+            
+            outputs.dashCustoTotal.textContent = formatCurrency(custoTotalOperacao);
+
+            const valorContrato = parseFloat(inputs.valorContrato.value) || 0;
+            
+            const fatorR = (valorContrato > 0) ? (folhaSalarialTotal / valorContrato) : 0;
+            outputs.dashFatorR.textContent = `${(fatorR * 100).toFixed(1)}%`;
+            outputs.dashFatorR.classList.toggle('text-success', fatorR >= 0.28);
+            outputs.dashFatorR.classList.toggle('text-warning', fatorR < 0.28);
+
+            // --- CÁLCULO DA ALÍQUOTA ---
+            let aliquotaImpostoPercentual = 0;
+            if (inputs.aliquotaAutomaticaSwitch.checked) {
+                const faturamentoAnual = valorContrato * 12;
+                aliquotaImpostoPercentual = getAliquotaSimples(faturamentoAnual, fatorR);
+                inputs.aliquotaSimples.value = aliquotaImpostoPercentual.toFixed(1);
+            } else {
+                aliquotaImpostoPercentual = parseFloat(inputs.aliquotaSimples.value) || 0;
+            }
+            
+            const aliquotaImposto = aliquotaImpostoPercentual / 100;
+            const impostos = valorContrato * aliquotaImposto;
+            const receitaLiquida = valorContrato - impostos;
+            const lucroLiquido = receitaLiquida - custoTotalOperacao;
+            const margemReal = valorContrato > 0 ? (lucroLiquido / valorContrato) : 0;
+
+            outputs.dashImpostos.textContent = formatCurrency(impostos);
+            outputs.dashLucroLiquido.textContent = formatCurrency(lucroLiquido);
+            outputs.dashMargemReal.textContent = `${(margemReal * 100).toFixed(1)}%`;
+            
+            outputs.dashLucroLiquido.classList.toggle('text-success', lucroLiquido > 0);
+            outputs.dashLucroLiquido.classList.toggle('text-danger', lucroLiquido < 0);
+            outputs.dashLucroLiquido.classList.toggle('text-primary', lucroLiquido === 0);
+
+            let analiseHTML = '';
+            if (valorContrato === 0) {
+                analiseHTML = 'Preencha o valor do contrato para ver a análise de viabilidade.';
+            } else if (lucroLiquido < 0) {
+                analiseHTML = `<p class="text-sm"><strong>Atenção: Prejuízo!</strong> O contrato opera com déficit de <strong class="text-red-300">${formatCurrency(Math.abs(lucroLiquido))}</strong>.</p>`;
+            } else {
+                analiseHTML = `<p class="text-sm"><strong>Operação Viável.</strong> O contrato gera um lucro líquido de <strong class="text-green-300">${formatCurrency(lucroLiquido)}</strong>.</p>`;
+            }
+            outputs.analiseViabilidade.innerHTML = analiseHTML;
+        }
+
+        // --- DYNAMIC ROW MANAGEMENT ---
+        function createEmployeeRow() {
+            const row = document.createElement('div');
+            row.className = 'employee-row flex items-center gap-3';
+            row.innerHTML = `
+                <input type="number" value="44" class="horas-input w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition" placeholder="Horas/sem">
+                <span class="text-secondary">x</span>
+                <input type="number" value="1" min="1" class="qtd-input w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition" placeholder="Qtd.">
+                <button class="remove-row-btn p-2 text-slate-400 hover:text-danger transition rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path></svg>
+                </button>
+                <button class="add-row-btn p-2 text-slate-400 hover:text-primary transition rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path></svg>
+                </button>
+            `;
+            containers.employeeRows.appendChild(row);
+            updateRemoveButtons();
+        }
+
+        function updateRemoveButtons() {
+            const rows = containers.employeeRows.querySelectorAll('.employee-row');
+            rows.forEach((row, index) => {
+                const removeBtn = row.querySelector('.remove-row-btn');
+                removeBtn.style.visibility = rows.length > 1 ? 'visible' : 'hidden';
+            });
+        }
+
+        function toggleAliquotaInput() {
+            const isAutomatic = inputs.aliquotaAutomaticaSwitch.checked;
+            inputs.aliquotaSimples.disabled = isAutomatic;
+            inputs.aliquotaSimples.classList.toggle('bg-slate-100', isAutomatic);
+            calculateAndRenderAll();
+        }
+
+        // --- EVENT LISTENERS ---
+        Object.values(inputs).forEach(input => {
+            if (input.id !== 'aliquotaAutomaticaSwitch') {
+                input.addEventListener('input', calculateAndRenderAll);
+            }
+        });
+        
+        inputs.aliquotaAutomaticaSwitch.addEventListener('change', toggleAliquotaInput);
+        
+        buttons.expandParams.addEventListener('click', () => {
+            const icon = buttons.expandParams.querySelector('svg');
+            containers.additionalParams.classList.toggle('expanded');
+            icon.classList.toggle('rotate-180');
+        });
+
+        containers.costBreakdown.addEventListener('click', (e) => {
+            const toggleButton = e.target.closest('[data-toggle="expand"]');
+            if (toggleButton) {
+                const targetId = toggleButton.dataset.target;
+                const targetElement = document.querySelector(targetId);
+                const icon = toggleButton.querySelector('svg');
+                if (targetElement) {
+                    targetElement.classList.toggle('expanded');
+                    icon.classList.toggle('rotate-180');
+                }
+            }
+        });
+
+        containers.employeeRows.addEventListener('click', (e) => {
+            const addBtn = e.target.closest('.add-row-btn');
+            const removeBtn = e.target.closest('.remove-row-btn');
+            if (addBtn) {
+                createEmployeeRow();
+            }
+            if (removeBtn) {
+                removeBtn.parentElement.remove();
+                updateRemoveButtons();
+                calculateAndRenderAll();
+            }
+        });
+        
+        containers.employeeRows.addEventListener('input', (e) => {
+            if (e.target.classList.contains('horas-input') || e.target.classList.contains('qtd-input')) {
+                calculateAndRenderAll();
+            }
+        });
+
+        // --- INITIALIZATION ---
+        window.addEventListener('load', () => {
+            createEmployeeRow();
+            toggleAliquotaInput(); // Chama para definir o estado inicial
+            calculateAndRenderAll();
+        });
+    </script>
+</body>
+</html>
